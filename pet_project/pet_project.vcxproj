@@ -23,7 +23,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{f9520bc1-0d3d-401d-bfb0-981b17979349}</ProjectGuid>
-    <RootNamespace>Projecttyu</RootNamespace>
+    <RootNamespace>pet_project</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
