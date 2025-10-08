@@ -8,16 +8,17 @@
 // mutex controlling console
 std::mutex mutCons;
 
-void send(SOCKET idSocket)
+void sendCycle(SOCKET idSocket)
 {
     short id = 1;
     for (;;)
     {
         std::cin.get();
+        std::cin.get();
         mutCons.lock();
         number num = 0;
         std::cin >> num;
-        std::cout << "Sent request id " << id << " with number " << num << std::endl;
+        std::cout << std::endl << "Sent request id " << id << " with number " << num << std::endl;
         mutCons.unlock();
         std::array<char, 11> mes = MS::serializeRequest(num, id);
         sendAll(idSocket, mes.data(), 11);
@@ -25,11 +26,28 @@ void send(SOCKET idSocket)
     }
 }
 
-void receive(SOCKET idSocket)
+void receiveCycle(SOCKET idSocket)
 {
     for (;;)
     {
-
+        char c;
+        recvAll(idSocket, &c, 1);
+        const MS::ETypeMes t = MS::decodeType(c);
+        switch (t)
+        {
+        case MS::ETypeMes::eAnsEmpty:
+        {
+            std::array<char, 2> buf;
+            recvAll(idSocket, buf.data(), 2);
+            const short id = MS::deserializeAnsEmpty(buf);
+            mutCons.lock();
+            std::cout << std::endl << "Request with id " << id << ": decomposition impossible" << std::endl;
+            mutCons.unlock();
+            break;
+        }
+        default:
+            return;
+        }
     }
 }
 
@@ -53,7 +71,10 @@ int main()
     serverAddr.sin_port = htons(TCPPort);
     connect(idSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
 
-    std::thread tSend()
+    std::thread tSend(sendCycle, idSocket);
+    std::thread tReceive(receiveCycle, idSocket);
+    tSend.join();
+    tReceive.join();
 
     return 0;
 }

@@ -29,30 +29,30 @@ int main()
 
     std::cerr << "Client connected" << std::endl;
 
-    std::array<char, 9> message;
-    recvAll(conn, message.data(), 9);
-
-    const char code = message[0];
-    if (MS::decodeType(code) != MS::ETypeMes::eReq)
+    for (;;)
     {
-        std::cerr << "Wrong request" << "\n";
-        std::cin.get();
-        return 0;
+        char c;
+        recvAll(conn, &c, 1);
+        const MS::ETypeMes t = MS::decodeType(c);
+        switch (t)
+        {
+        case MS::ETypeMes::eReq:
+        {
+            std::array<char, 10> buf;
+            recvAll(conn, buf.data(), 10);
+            const std::pair<short, number> res = MS::deserializeRequest(buf);
+            const short idd = res.first;
+            std::cout << "Received a request with id " << idd << " and number " << res.second << std::endl;
+            _Thrd_sleep_for(10000);
+            std::array<char, 3> b;
+            b = MS::serializeAnsEmpty(idd);
+            sendAll(conn, b.data(), 3);
+            break;
+        }
+        default:
+            return 0;
+        }
     }
-
-    std::array<char, 8> num;
-    for (int i = 0; i < 8; i++)
-        num[i] = message[i + 1];
-
-    number h = MS::deserializeRequest(num);
-    int count = 0;
-    while (h >= 10)
-    {
-        h /= 10;
-        count++;
-    }
-    std::cerr << count;
-    std::cin.get();
 
     return 0;
 }
