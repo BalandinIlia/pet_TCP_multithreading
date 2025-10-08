@@ -27,7 +27,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{d35f98b4-671a-46b7-9f87-65c0b7fc7ea1}</ProjectGuid>
-    <RootNamespace>protocol</RootNamespace>
+    <RootNamespace>shared</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>shared</ProjectName>
   </PropertyGroup>
