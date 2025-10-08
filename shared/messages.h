@@ -26,6 +26,7 @@ namespace MS
 		case ETypeMes::eReq: return 'a';
 		case ETypeMes::eAnsEmpty: return 'b';
 		case ETypeMes::eAnsInf: return 'c';
+		case ETypeMes::eError: return 0;
 		}
 	}
 
@@ -40,32 +41,59 @@ namespace MS
 		}
 	}
 
-	std::array<char, 9> serializeRequest(number req)
+	int length(ETypeMes t)
 	{
-		uint64_t buf[2] = {0, 0};
-		number* pN = buf;
-		char* p = reinterpret_cast<char*>(pN);
-		p += 7;
-		*p = codeType(ETypeMes::eReq);
-		buf[1] = req;
+		switch (t)
+		{
+		case ETypeMes::eReq: return 10;
+		case ETypeMes::eAnsEmpty: return 2;
+		case ETypeMes::eAnsInf: return -1;
+		case ETypeMes::eError: return -2;
+		}
+	}
 
-		std::array<char, 9> ans;
-		for (int i = 0; i < 9; i++)
+	std::array<char, 11> serializeRequest(number req, short idRequest)
+	{
+		char* pCode = nullptr;
+		uint16_t* pId = nullptr;
+		uint64_t* pNum = nullptr;
+
+		std::array<uint64_t, 2> buf;
+		char* pBuf = reinterpret_cast<char*>(buf.data()) + 5;
+		pCode = pBuf;
+		pId = reinterpret_cast<uint16_t*>(pBuf + 1);
+		pNum = reinterpret_cast<uint64_t*>(pBuf + 3);
+
+		*pCode = codeType(ETypeMes::eReq);
+		*pId = static_cast<uint16_t>(idRequest);
+
+		std::array<char, 11> ans;
+		for (int i = 0; i < 11; i++)
 			ans[i] = p[i];
 		return ans;
 	}
 
-	number deserializeRequest(const std::array<char, 8>& rawData)
+	std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
 	{
-		uint64_t ans = 0;
-		uint64_t* pN = &ans;
-		char* p = reinterpret_cast<char*>(pN);
-		for (int i = 0; i < 8; i++)
+		uint16_t* pId = nullptr;
+		uint64_t* pNum = nullptr;
+
+		std::array<uint64_t, 2> buf;
+		char* p = reinterpret_cast<char*>(buf.data());
+		p += 6;
+		for (int i = 0; i < 10; i++)
 			p[i] = rawData[i];
-		return ans;
+
+		pId = reinterpret_cast<uint16_t*>(p);
+		pNum = reinterpret_cast<uint64_t*>(p + 2);
+
+		short id = static_cast<short>(*pId);
+		short num = static_cast<number>(*pNum);
+
+		return std::pair<short, number>(id, num);
 	}
 
-	std::vector<char> serializeAnsInf(const std::vector<number> aNum)
+	std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(aNum.size());
@@ -79,19 +107,25 @@ namespace MS
 		char* pCode = nullptr;
 		// pointer to quantity of numbers in the buffer
 		uint8_t* pQuant = nullptr;
+		// pointer to id
+		uint16_t* pId = nullptr;
 		// pointer of array of numbers in the buffer
 		uint64_t* aVal = nullptr;
 
 		// Here we create a structure which will contain buffer and link it to abovementioned variables.
 		std::vector<uint64_t> bufInternal;
 		bufInternal.resize(N + 1);
-		pBuf = reinterpret_cast<char*>(bufInternal.data()) + 6;
-		lenBuf = N * 8 + 2;
+		pBuf = reinterpret_cast<char*>(bufInternal.data()) + 4;
+		lenBuf = N * 8 + 4;
 		pCode = pBuf;
 		pQuant = reinterpret_cast<uint8_t*>(pBuf) + 1;
+		pId = reinterpret_cast<uint16_t*>(pBuf + 2);
 		aVal = bufInternal.data() + 1;
 
 		// fill the buffer
+		*pCode = codeType(ETypeMes::eAnsInf);
+		*pQuant = static_cast<uint8_t>(N);
+		*pId = static_cast<uint16_t>(id);
 		for (int i = 0; i < N; i++)
 			aVal[i] = aNum[i];
 
@@ -107,17 +141,26 @@ namespace MS
 	int bufSizeAnsInf(char c)
 	{
 		uint8_t* p = reinterpret_cast<uint8_t*>(c);
-		return *p;
+		return (*p) * 8 + 2;
 	}
 
-	std::vector<number> deserializeAnsInf(const std::vector<char>& aCh)
+	std::vector<number> deserializeAnsInf(short& id, const std::vector<char>& aCh)
 	{
-		const int N = static_cast<int>(aCh.size()) / 8;
+		const int N = static_cast<int>(aCh.size() - 2) / 8;
+
+		std::vector<uint64_t> buf;
+		buf.reserve(N + 1);
+		
+		char* p = reinterpret_cast<char*>(buf.data());
+		p += 6;
+		for (int i = 0; i < aCh.size(); i++)
+			p[i] = aCh[i];
+
+		id = *(reinterpret_cast<uint16_t*>(p));
+
 		std::vector<number> ans;
-		ans.reserve(N);
-		const uint64_t* p = reinterpret_cast<const uint64_t*>(aCh.data());
 		for (int i = 0; i < N; i++)
-			ans.push_back(p[i]);
+			ans.push_back(buf[i]);
 		return ans;
 	}
 }
