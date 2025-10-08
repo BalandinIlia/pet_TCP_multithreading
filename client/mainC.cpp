@@ -1,7 +1,37 @@
 #include "winsock2.h"
 #include "iostream"
+#include "thread"
+#include "mutex"
 #include "../shared/messages.h"
 #include "../shared/utils.h"
+
+// mutex controlling console
+std::mutex mutCons;
+
+void send(SOCKET idSocket)
+{
+    short id = 1;
+    for (;;)
+    {
+        std::cin.get();
+        mutCons.lock();
+        number num = 0;
+        std::cin >> num;
+        std::cout << "Sent request id " << id << " with number " << num << std::endl;
+        mutCons.unlock();
+        std::array<char, 11> mes = MS::serializeRequest(num, id);
+        sendAll(idSocket, mes.data(), 11);
+        id++;
+    }
+}
+
+void receive(SOCKET idSocket)
+{
+    for (;;)
+    {
+
+    }
+}
 
 int main()
 {
@@ -23,13 +53,7 @@ int main()
     serverAddr.sin_port = htons(TCPPort);
     connect(idSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
 
-    number num = 0;
-    std::cin >> num;
-
-    std::array<char, 9> mes = MS::serializeRequest(num);
-
-    sendAll(idSocket, mes.data(), 9);
-    std::cin.get();
+    std::thread tSend()
 
     return 0;
 }
