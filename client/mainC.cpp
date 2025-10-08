@@ -1,7 +1,7 @@
 #include "winsock2.h"
 #include "iostream"
-#include "../protocol/messages.h"
-#include "../protocol/utils.h"
+#include "../shared/messages.h"
+#include "../shared/utils.h"
 
 int main()
 {
