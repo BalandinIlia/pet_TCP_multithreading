@@ -21,8 +21,14 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /p:Configuration=Release .
 
-    - name: Upload build results
+    - name: Upload server application
       uses: actions/upload-artifact@v4
       with:
-        name: build-output
+        name: server
         path: x64/Release/server.exe
+
+    - name: Upload client application
+      uses: actions/upload-artifact@v4
+      with:
+        name: client
+        path: x64/Release/client.exe
