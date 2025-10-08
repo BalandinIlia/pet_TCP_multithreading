@@ -1,11 +1,5 @@
 #include "winsock2.h"
-#include "ws2tcpip.h"
-#include "windows.h"
-#include <iostream>
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <string>
+#include "iostream"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -15,16 +9,13 @@ void runServer()
     WSAStartup(0x202, &wsaData);
 
     SOCKET listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (listenSocket == INVALID_SOCKET) {
+    if (listenSocket == INVALID_SOCKET)
         std::cerr << "socket() failed: " << WSAGetLastError() << "\n";
-        //return;
-    }
 
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     serverAddr.sin_port = htons(5555);
-
     bind(listenSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
 
     listen(listenSocket, SOMAXCONN);
@@ -53,10 +44,8 @@ void runClient()
     WSAStartup(0x202, &wsaData);
 
     SOCKET socke = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (socke == INVALID_SOCKET) {
+    if (socke == INVALID_SOCKET)
         std::cerr << "socket() failed: " << WSAGetLastError() << "\n";
-        //return;
-    }
 
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
