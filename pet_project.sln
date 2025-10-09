@@ -5,20 +5,28 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "server", "server\server.vcxproj", "{65202653-F817-4390-B3A7-684AE0D41C6A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97} = {2205EB90-FCD4-47E6-987C-FDF9C69FDE97}
 		{B98CE112-FA07-417E-8477-5EB75A2AFE18} = {B98CE112-FA07-417E-8477-5EB75A2AFE18}
 		{FBD5D8BF-1967-4031-9E91-EC8202523230} = {FBD5D8BF-1967-4031-9E91-EC8202523230}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "client\client.vcxproj", "{C594BDCF-4E96-4214-B26D-19343E554514}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97} = {2205EB90-FCD4-47E6-987C-FDF9C69FDE97}
 		{FBD5D8BF-1967-4031-9E91-EC8202523230} = {FBD5D8BF-1967-4031-9E91-EC8202523230}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "shared\shared.vcxproj", "{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "math_Core", "math_Core\math_Core.vcxproj", "{B98CE112-FA07-417E-8477-5EB75A2AFE18}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97} = {2205EB90-FCD4-47E6-987C-FDF9C69FDE97}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "networking", "networking\networking.vcxproj", "{FBD5D8BF-1967-4031-9E91-EC8202523230}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97} = {2205EB90-FCD4-47E6-987C-FDF9C69FDE97}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "controls", "controls\controls.vcxproj", "{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,14 +52,6 @@ Global
 		{C594BDCF-4E96-4214-B26D-19343E554514}.Release|x64.Build.0 = Release|x64
 		{C594BDCF-4E96-4214-B26D-19343E554514}.Release|x86.ActiveCfg = Release|Win32
 		{C594BDCF-4E96-4214-B26D-19343E554514}.Release|x86.Build.0 = Release|Win32
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Debug|x64.ActiveCfg = Debug|x64
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Debug|x64.Build.0 = Debug|x64
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Debug|x86.ActiveCfg = Debug|Win32
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Debug|x86.Build.0 = Debug|Win32
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Release|x64.ActiveCfg = Release|x64
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Release|x64.Build.0 = Release|x64
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Release|x86.ActiveCfg = Release|Win32
-		{D35F98B4-671A-46B7-9F87-65C0B7FC7EA1}.Release|x86.Build.0 = Release|Win32
 		{B98CE112-FA07-417E-8477-5EB75A2AFE18}.Debug|x64.ActiveCfg = Debug|x64
 		{B98CE112-FA07-417E-8477-5EB75A2AFE18}.Debug|x64.Build.0 = Debug|x64
 		{B98CE112-FA07-417E-8477-5EB75A2AFE18}.Debug|x86.ActiveCfg = Debug|Win32
@@ -68,6 +68,14 @@ Global
 		{FBD5D8BF-1967-4031-9E91-EC8202523230}.Release|x64.Build.0 = Release|x64
 		{FBD5D8BF-1967-4031-9E91-EC8202523230}.Release|x86.ActiveCfg = Release|Win32
 		{FBD5D8BF-1967-4031-9E91-EC8202523230}.Release|x86.Build.0 = Release|Win32
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Debug|x64.ActiveCfg = Debug|x64
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Debug|x64.Build.0 = Debug|x64
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Debug|x86.ActiveCfg = Debug|Win32
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Debug|x86.Build.0 = Debug|Win32
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Release|x64.ActiveCfg = Release|x64
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Release|x64.Build.0 = Release|x64
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Release|x86.ActiveCfg = Release|Win32
+		{2205EB90-FCD4-47E6-987C-FDF9C69FDE97}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

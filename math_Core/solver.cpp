@@ -1,7 +1,6 @@
 #include "pch.h"
+#include "../controls/controls.h"
 #include "solver.h"
-
-static constexpr int delay = 10000;
 
 std::vector<number> solve(number n)
 {
@@ -13,7 +12,7 @@ std::vector<number> solve(number n)
 		if (rem == 2)
 		{
 			ans.clear();
-			Sleep(delay);
+			Sleep(delayAlgo);
 			return ans;
 		}
 		else if (rem == 1)
@@ -21,6 +20,6 @@ std::vector<number> solve(number n)
 		cnt *= 3;
 		n /= 3;
 	}
-	Sleep(delay);
+	Sleep(delayAlgo);
 	return ans;
 }

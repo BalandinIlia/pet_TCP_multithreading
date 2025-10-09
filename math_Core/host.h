@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "map"
-#include "../shared/params.h"
+#include "../controls/controls.h"
 
 class CMathCoreHost
 {

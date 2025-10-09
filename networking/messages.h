@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "../shared/params.h"
+#include "../controls/controls.h"
 
 namespace MS
 {

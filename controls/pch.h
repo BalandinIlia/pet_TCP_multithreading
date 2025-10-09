@@ -8,10 +8,5 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include "vector"
-#include "map"
-#include "mutex"
-#include "array"
-#include "windows.h"
 
 #endif //PCH_H

@@ -1,5 +1,5 @@
 #pragma once
 #include "pch.h"
-#include "../shared/params.h"
+#include "../controls/controls.h"
 
 std::vector<number> solve(number n);

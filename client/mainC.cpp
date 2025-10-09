@@ -89,7 +89,7 @@ int main()
     sockaddr_in serverAddr{};
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = htonl(addrIP);
-    serverAddr.sin_port = htons(TCPPort);
+    serverAddr.sin_port = htons(port);
     connect(idSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
 
     std::thread tSend(sendCycle, idSocket);
