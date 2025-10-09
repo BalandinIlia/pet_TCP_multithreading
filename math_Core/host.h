@@ -10,7 +10,7 @@ private:
 public:
 	static CMathCoreHost& one();
 
-	std::vector<number> solve(number num) const;
+	std::vector<number> get(number num);
 
 	~CMathCoreHost();
 

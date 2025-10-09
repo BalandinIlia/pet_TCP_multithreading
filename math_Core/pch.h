@@ -11,5 +11,7 @@
 #include "vector"
 #include "map"
 #include "mutex"
+#include "array"
+#include "limits"
 
 #endif //PCH_H

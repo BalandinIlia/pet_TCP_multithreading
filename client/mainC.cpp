@@ -45,8 +45,29 @@ void receiveCycle(SOCKET idSocket)
             mutCons.unlock();
             break;
         }
+        case MS::ETypeMes::eAnsInf:
+        {
+            recvAll(idSocket, &c, 1);
+            const int sz = MS::bufSizeAnsInf(c);
+            std::vector<char> buf;
+            buf.resize(sz);
+            recvAll(idSocket, buf.data(), sz);
+            const std::pair<short, std::vector<number>> ans = MS::deserializeAnsInf(buf);
+            mutCons.lock();
+            std::cout << std::endl << "Request with id " << ans.first << ": decomposition possible:";
+            for (number comp : ans.second)
+                std::cout << comp << " ";
+            std::cout << std::endl;
+            mutCons.unlock();
+            break;
+        }
         default:
-            return;
+        {
+            mutCons.lock();
+            std::cout << std::endl << "Incorrect code from server" << std::endl;
+            mutCons.unlock();
+            break;
+        }
         }
     }
 }

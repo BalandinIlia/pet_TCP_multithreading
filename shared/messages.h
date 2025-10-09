@@ -130,7 +130,7 @@ namespace MS
 		const int lenBuf = N * 8 + 4;
 		ans.reserve(lenBuf);
 		for (int i = 0; i < lenBuf; i++)
-			ans[i] = pSer[i];
+			ans.push_back(pSer[i]);
 		return ans;
 	}
 
@@ -184,7 +184,7 @@ namespace MS
 
 	inline int bufSizeAnsInf(char c)
 	{
-		uint8_t* p = reinterpret_cast<uint8_t*>(c);
+		uint8_t* p = reinterpret_cast<uint8_t*>(&c);
 		return (*p) * 8 + 2;
 	}
 
@@ -205,7 +205,7 @@ namespace MS
 		aNum.resize(N);
 		char* pNum = reinterpret_cast<char*>(aNum.data());
 		for (int i = 0; i < 8*N; i++)
-			pId[i] = rawData[i + 2];
+			pNum[i] = rawData[i + 2];
 
 		short idRet = static_cast<short>(id);
 		std::vector<number> aNumRet;

@@ -9,7 +9,7 @@
 
 void solveCase(short id, number num, SOCKET idSocket, std::mutex* mutSocket)
 {
-	std::vector<number> aNum = CMathCoreHost::one().solve(num);
+	std::vector<number> aNum = CMathCoreHost::one().get(num);
 	if (aNum.empty())
 	{
 		std::array<char, 3> buf = MS::serializeAnsEmpty(id);

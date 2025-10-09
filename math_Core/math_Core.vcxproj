@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="host.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="solver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="host.cpp" />
@@ -146,6 +147,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="solver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
