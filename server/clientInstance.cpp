@@ -3,8 +3,8 @@
 #include "mutex"
 #include "logger.h"
 #include "clientInstance.h"
-#include "../shared/messages.h"
-#include "../shared/utils.h"
+#include "../networking/messages.h"
+#include "../networking/utils.h"
 #include "../math_Core/host.h"
 
 void solveCase(short id, number num, SOCKET idSocket, std::mutex* mutSocket)

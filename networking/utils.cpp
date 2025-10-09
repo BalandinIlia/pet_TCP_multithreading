@@ -1,24 +1,20 @@
-#pragma once
-#include "winsock2.h"
+#include "pch.h"
+#include "utils.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
-class CWSAConfig
+CWSAConfig::CWSAConfig()
 {
-public:
-    CWSAConfig()
-    {
-        WSADATA wsaData;
-        WSAStartup(0x202, &wsaData);
-    }
+    WSADATA wsaData;
+    WSAStartup(0x202, &wsaData);
+}
 
-    ~CWSAConfig()
-    {
-        WSACleanup();
-    }
-};
+CWSAConfig::~CWSAConfig()
+{
+    WSACleanup();
+}
 
-inline void recvAll(SOCKET id, char* buf, int len)
+void recvAll(SOCKET id, char* buf, int len)
 {
     int bytes = 0;
     while (len != 0)
@@ -30,7 +26,7 @@ inline void recvAll(SOCKET id, char* buf, int len)
     }
 }
 
-inline void sendAll(SOCKET id, char* buf, int len)
+void sendAll(SOCKET id, char* buf, int len)
 {
     int bytes = 0;
     while (len != 0)

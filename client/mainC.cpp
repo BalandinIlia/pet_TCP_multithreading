@@ -2,8 +2,8 @@
 #include "iostream"
 #include "thread"
 #include "mutex"
-#include "../shared/messages.h"
-#include "../shared/utils.h"
+#include "../networking/messages.h"
+#include "../networking/utils.h"
 
 // mutex controlling console
 std::mutex mutCons;

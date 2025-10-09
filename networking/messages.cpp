@@ -1,25 +1,10 @@
-#pragma once
-#include "array"
-#include "vector"
-#include "params.h"
+#include "pch.h"
+#include "messages.h"
 
 namespace MS
 {
 
-	// message types
-	enum class ETypeMes
-	{
-		// client request with particular number
-		eReq,
-		// server answer that there is no sum
-		eAnsEmpty,
-		// server answer with components of sum
-		eAnsInf,
-		// special incorrect case
-		eError
-	};
-
-	inline char codeType(ETypeMes t)
+	char codeType(ETypeMes t)
 	{
 		switch (t)
 		{
@@ -30,7 +15,7 @@ namespace MS
 		}
 	}
 
-	inline ETypeMes decodeType(char c)
+	ETypeMes decodeType(char c)
 	{
 		switch (c)
 		{
@@ -41,7 +26,7 @@ namespace MS
 		}
 	}
 
-	inline int length(ETypeMes t)
+	int length(ETypeMes t)
 	{
 		switch (t)
 		{
@@ -52,14 +37,14 @@ namespace MS
 		}
 	}
 
-	inline std::array<char, 11> serializeRequest(number req, short idRequest)
+	std::array<char, 11> serializeRequest(number req, short idRequest)
 	{
 		// In this function we serialize the following fields:
 		// 1. Message code
 		// 2. Request id
 		// 3. Number (request body)
 		// So, first we introduce pointers to all these 3 parts
-		
+
 		// This is a pointer to the message code field
 		char* pCode = nullptr;
 		// a pointer to the id field
@@ -88,7 +73,7 @@ namespace MS
 		return ans;
 	}
 
-	inline std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
+	std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(aNum.size());
@@ -134,7 +119,7 @@ namespace MS
 		return ans;
 	}
 
-	inline std::array<char, 3> serializeAnsEmpty(short id)
+	std::array<char, 3> serializeAnsEmpty(short id)
 	{
 		// In this function we serialize the following fields:
 		// 1. Message code
@@ -145,7 +130,7 @@ namespace MS
 		char* pCode = nullptr;
 		// pointer to id
 		uint16_t* pId = nullptr;
-		
+
 		// Here we reserve a memory chunk to serialize the message. Alignment is taken into account.
 		std::array<uint16_t, 2> buf;
 		char* pSer = reinterpret_cast<char*>(buf.data()) + 1;
@@ -155,7 +140,7 @@ namespace MS
 		// fill the buffer
 		*pCode = codeType(ETypeMes::eAnsEmpty);
 		*pId = static_cast<uint16_t>(id);
-		
+
 		// return the serialization
 		std::array<char, 3> ans;
 		for (int i = 0; i < 3; i++)
@@ -163,7 +148,7 @@ namespace MS
 		return ans;
 	}
 
-	inline std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
+	std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
 	{
 		// In this function we deserialize the request
 		uint16_t id = 0;
@@ -182,13 +167,13 @@ namespace MS
 		return std::pair<short, number>(id, num);
 	}
 
-	inline int bufSizeAnsInf(char c)
+	int bufSizeAnsInf(char c)
 	{
 		uint8_t* p = reinterpret_cast<uint8_t*>(&c);
 		return (*p) * 8 + 2;
 	}
 
-	inline std::pair<short, std::vector<number>> deserializeAnsInf(const std::vector<char>& rawData)
+	std::pair<short, std::vector<number>> deserializeAnsInf(const std::vector<char>& rawData)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(rawData.size() - 2) / 8;
@@ -204,7 +189,7 @@ namespace MS
 		// deserialize aNum: all other bytes
 		aNum.resize(N);
 		char* pNum = reinterpret_cast<char*>(aNum.data());
-		for (int i = 0; i < 8*N; i++)
+		for (int i = 0; i < 8 * N; i++)
 			pNum[i] = rawData[i + 2];
 
 		short idRet = static_cast<short>(id);
@@ -215,10 +200,10 @@ namespace MS
 		return std::pair<short, std::vector<number>>(idRet, aNumRet);
 	}
 
-	inline short deserializeAnsEmpty(const std::array<char, 2>& rawData)
+	short deserializeAnsEmpty(const std::array<char, 2>& rawData)
 	{
 		uint16_t id = 0;
-		
+
 		// deserialize id: two bytes in id
 		char* pId = reinterpret_cast<char*>(&id);
 		for (int i = 0; i < 2; i++)

@@ -19,8 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="messages.h" />
     <ClInclude Include="params.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
