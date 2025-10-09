@@ -18,7 +18,7 @@ public:
     }
 };
 
-void recvAll(SOCKET id, char* buf, int len)
+inline void recvAll(SOCKET id, char* buf, int len)
 {
     int bytes = 0;
     while (len != 0)
@@ -30,7 +30,7 @@ void recvAll(SOCKET id, char* buf, int len)
     }
 }
 
-void sendAll(SOCKET id, char* buf, int len)
+inline void sendAll(SOCKET id, char* buf, int len)
 {
     int bytes = 0;
     while (len != 0)

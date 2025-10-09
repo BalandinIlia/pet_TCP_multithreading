@@ -19,7 +19,7 @@ namespace MS
 		eError
 	};
 
-	char codeType(ETypeMes t)
+	inline char codeType(ETypeMes t)
 	{
 		switch (t)
 		{
@@ -30,7 +30,7 @@ namespace MS
 		}
 	}
 
-	ETypeMes decodeType(char c)
+	inline ETypeMes decodeType(char c)
 	{
 		switch (c)
 		{
@@ -41,7 +41,7 @@ namespace MS
 		}
 	}
 
-	int length(ETypeMes t)
+	inline int length(ETypeMes t)
 	{
 		switch (t)
 		{
@@ -52,7 +52,7 @@ namespace MS
 		}
 	}
 
-	std::array<char, 11> serializeRequest(number req, short idRequest)
+	inline std::array<char, 11> serializeRequest(number req, short idRequest)
 	{
 		// In this function we serialize the following fields:
 		// 1. Message code
@@ -88,7 +88,7 @@ namespace MS
 		return ans;
 	}
 
-	std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
+	inline std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(aNum.size());
@@ -134,7 +134,7 @@ namespace MS
 		return ans;
 	}
 
-	std::array<char, 3> serializeAnsEmpty(short id)
+	inline std::array<char, 3> serializeAnsEmpty(short id)
 	{
 		// In this function we serialize the following fields:
 		// 1. Message code
@@ -163,7 +163,7 @@ namespace MS
 		return ans;
 	}
 
-	std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
+	inline std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
 	{
 		// In this function we deserialize the request
 		uint16_t id = 0;
@@ -182,13 +182,13 @@ namespace MS
 		return std::pair<short, number>(id, num);
 	}
 
-	int bufSizeAnsInf(char c)
+	inline int bufSizeAnsInf(char c)
 	{
 		uint8_t* p = reinterpret_cast<uint8_t*>(c);
 		return (*p) * 8 + 2;
 	}
 
-	std::pair<short, std::vector<number>> deserializeAnsInf(const std::vector<char>& rawData)
+	inline std::pair<short, std::vector<number>> deserializeAnsInf(const std::vector<char>& rawData)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(rawData.size() - 2) / 8;
@@ -215,7 +215,7 @@ namespace MS
 		return std::pair<short, std::vector<number>>(idRet, aNumRet);
 	}
 
-	short deserializeAnsEmpty(const std::array<char, 2>& rawData)
+	inline short deserializeAnsEmpty(const std::array<char, 2>& rawData)
 	{
 		uint16_t id = 0;
 		
