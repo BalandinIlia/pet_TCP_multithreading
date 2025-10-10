@@ -58,12 +58,19 @@ void CRunner::receive()
             // Here I access the table. While I don't modify the table here, I still have to lock the mutex to
             // make sure the table is not modified while I am accessing it. If I don't do this, I can get some 
             // intermediate table state (half-modified).
+            std::string sError;
             m_mutTable.lock();
-            const number n = m_table[id];
+            number n = 0;
+            if (m_table.find(id) != m_table.end())
+                n = m_table[id];
+            else
+                sError = "Error: inner table does not contain request id received from the server.";
             m_mutTable.unlock();
 
             // Show a number from the user (to console). So here I lock the console mutex to own the console.
             m_mutCons.lock();
+            if (!sError.empty())
+                std::cout << std::endl << sError;
             std::cout << std::endl << "Decomposition of " << n << " is impossible";
             m_mutCons.unlock();
             break;
