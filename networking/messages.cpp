@@ -53,8 +53,11 @@ namespace MS
 		uint64_t* pNum = nullptr;
 
 		// This is a memory chunk we will use for message serialization
-		// This chunk contains 16 bytes, while we need to serialize only 11 bytes. This is due to
-		// data alignment: body (8-byte variable) need to start at address multiple to 8.
+		// This chunk contains 16 bytes, while I need to serialize only 11 bytes.
+		// I still reserve buffer of 16 bytes due to data alignment.
+		// The number must be written at address multiple of 8. So first 8 bytes
+		// are for code, id. Last 8 bytes (which start at address multiple of 8 due to reservation way)
+		// are for the number.
 		std::array<uint64_t, 2> buf;
 		// pointer to the place where serialization starts
 		char* pSer = reinterpret_cast<char*>(buf.data()) + 5;
@@ -82,19 +85,20 @@ namespace MS
 		// 1. Message code
 		// 2. Quantity of elements
 		// 3. Request id
-		// 4. Numbers (request body)
+		// 4. Numbers
 		// So, first we introduce pointers to all these 4 parts
 
 		// pointer to the message code in the buffer
 		char* pCode = nullptr;
 		// pointer to quantity of numbers in the buffer
 		uint8_t* pQuant = nullptr;
-		// pointer to id
+		// pointer to the id
 		uint16_t* pId = nullptr;
-		// pointer of array of numbers in the buffer
+		// pointer of the array of numbers in the buffer
 		uint64_t* aVal = nullptr;
 
-		// Here we reserve a memory chunk to serialize the message. Alignment is taken into account.
+		// Here we reserve a memory chunk to serialize the message. 
+		// Data alignment is taken into account.
 		std::vector<uint64_t> buf;
 		buf.resize(N + 1);
 		char* pSer = reinterpret_cast<char*>(buf.data()) + 4;
@@ -131,7 +135,8 @@ namespace MS
 		// pointer to id
 		uint16_t* pId = nullptr;
 
-		// Here we reserve a memory chunk to serialize the message. Alignment is taken into account.
+		// Here we reserve a memory chunk to serialize the message.
+		// Data alignment is taken into account.
 		std::array<uint16_t, 2> buf;
 		char* pSer = reinterpret_cast<char*>(buf.data()) + 1;
 		pCode = pSer;
@@ -154,23 +159,30 @@ namespace MS
 		uint16_t id = 0;
 		uint64_t num = 0;
 
-		// deserialize id: first two bytes in id
-		char* pId = reinterpret_cast<char*>(&id);
-		for (int i = 0; i < 2; i++)
-			pId[i] = rawData[i];
+		{
+			// fill id: first two bytes in raw data
+			char* pId = reinterpret_cast<char*>(&id);
+			for (int i = 0; i < 2; i++)
+				pId[i] = rawData[i];
+		}
+		{
+			// fill num: last 8 bytes in raw data
+			char* pNum = reinterpret_cast<char*>(&num);
+			for (int i = 0; i < 8; i++)
+				pNum[i] = rawData[i + 2];
+		}
 
-		// deserialize num: last two bytes in num
-		char* pNum = reinterpret_cast<char*>(&num);
-		for (int i = 0; i < 8; i++)
-			pNum[i] = rawData[i + 2];
-
-		return std::pair<short, number>(id, num);
+		return std::pair<short, number>
+			(
+				static_cast<short>(id),
+				static_cast<number>(num)
+			);
 	}
 
 	int bufSizeAnsYes(char c)
 	{
 		uint8_t* p = reinterpret_cast<uint8_t*>(&c);
-		return (*p) * 8 + 2;
+		return static_cast<int>(*p) * 8 + 2;
 	}
 
 	std::pair<short, std::vector<number>> deserializeAnsYes(const std::vector<char>& rawData)
@@ -181,16 +193,19 @@ namespace MS
 		uint16_t id = 0;
 		std::vector<uint64_t> aNum;
 
-		// deserialize id: first two bytes in id
-		char* pId = reinterpret_cast<char*>(&id);
-		for (int i = 0; i < 2; i++)
-			pId[i] = rawData[i];
-
-		// deserialize aNum: all other bytes
-		aNum.resize(N);
-		char* pNum = reinterpret_cast<char*>(aNum.data());
-		for (int i = 0; i < 8 * N; i++)
-			pNum[i] = rawData[i + 2];
+		{
+			// fill id: first two bytes in raw data
+			char* pId = reinterpret_cast<char*>(&id);
+			for (int i = 0; i < 2; i++)
+				pId[i] = rawData[i];
+		}
+		{
+			// fill aNum: all other bytes
+			aNum.resize(N);
+			char* pNum = reinterpret_cast<char*>(aNum.data());
+			for (int i = 0; i < 8 * N; i++)
+				pNum[i] = rawData[i + 2];
+		}
 
 		short idRet = static_cast<short>(id);
 		std::vector<number> aNumRet;

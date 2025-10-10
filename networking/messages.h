@@ -28,20 +28,23 @@ namespace MS
 	// message types
 	enum class ETypeMes
 	{
-		// client request with particular number
+		// request
 		eReq,
-		// server answer that there is no sum
+		// answer no
 		eAnsNo,
-		// server answer with components of sum
+		// answer yes
 		eAnsYes,
-		// special incorrect case
+		// special type
 		eError
 	};
 
+	// char encoding particular type
 	char codeType(ETypeMes t);
 
+	// type encoded by particualr char
 	ETypeMes decodeType(char c);
 
+	// length of particular type message (negative value for non-fixed length)
 	int length(ETypeMes t);
 
 	std::array<char, 11> serializeRequest(number req, short idRequest);
@@ -52,6 +55,7 @@ namespace MS
 
 	std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData);
 
+	// message size for answer yes
 	int bufSizeAnsYes(char c);
 
 	std::pair<short, std::vector<number>> deserializeAnsYes(const std::vector<char>& rawData);
