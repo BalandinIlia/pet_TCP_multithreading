@@ -1,4 +1,4 @@
 #pragma once
 #include "winsock2.h"
 
-void serveClient(SOCKET id);
+void serveClient(SOCKET id, int idClient);

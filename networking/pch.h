@@ -10,6 +10,8 @@
 // add headers that you want to pre-compile here
 #include "array"
 #include "vector"
+#include "map"
+#include "mutex"
 #include "winsock2.h"
 
 #endif //PCH_H

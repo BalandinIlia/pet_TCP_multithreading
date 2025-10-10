@@ -14,9 +14,11 @@ public:
 };
 
 // This is an utility function for receiving bytes from socket. Unlike system recv, it grants that all len
-// bytes are received: it finishes only when all of them are received
-void recvAll(SOCKET id, char* buf, int len);
+// bytes are received: it finishes only when all of them are received. It returns true if all bytes were
+// successfully received and false in case of some error.
+bool recvAll(SOCKET id, char* buf, int len);
 
 // This is an utility function for sending bytes to socket. Unlike system send, it grants that all len
-// bytes are sent: it finishes only when all of them are sent
-void sendAll(SOCKET id, char* buf, int len);
+// bytes are sent: it finishes only when all of them are sent. It returns true if all bytes were
+// successfully sent and false in case of some error.
+bool sendAll(SOCKET id, char* buf, int len);

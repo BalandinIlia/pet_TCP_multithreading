@@ -27,6 +27,8 @@ private:
 	static void sendAdapter(CRunner* r) { r->send(); }
 	static void recvAdapter(CRunner* r) { r->receive(); }
 
+	void logConnectionLost();
+
 private:
 	// socket id
 	const SOCKET m_idSocket;

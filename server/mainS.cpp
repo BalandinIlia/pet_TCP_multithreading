@@ -31,10 +31,12 @@ int main()
 
     listen(idSocket, SOMAXCONN);
 
+    int idClient = 1;
     for (;;)
     {
         SOCKET conn = accept(idSocket, nullptr, nullptr);
-        std::thread t(serveClient, conn);
+        std::thread t(serveClient, conn, idClient);
+        idClient++;
         t.detach();
     }
 
