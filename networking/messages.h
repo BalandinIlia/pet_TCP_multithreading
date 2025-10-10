@@ -1,6 +1,27 @@
 #pragma once
 #include "pch.h"
 #include "../controls/controls.h"
+/// <summary>
+/// This file introduces my own protocol for client-server communication working over TCP.
+///
+/// There are 3 types of messages:
+/// 1. Request: a request from the client to the server
+/// 2. Answer Empty: an answer from the server to the client that decomposition is impossible
+/// 3. Answer informative: an answer from the server to the client that decomposition is possible.
+///	                       This message also contains decomposition elements.
+/// 
+/// Each message is serialized into binary format. The structure is the following:
+/// First byte: always encodes message type. The following structure depends on message type.
+/// 1. Request:
+///		2nd-3rd bytes: request id in uint16_t format
+///		4th-11th bytes: request body (the number for decomposition) in uint64_t format
+/// 2. Answer Empty:
+///		2nd-3rd bytes: request id in uint16_t format
+/// 3. Answer informative:
+///		2nd byte: quantity of decomposition components in uint8_t format
+///		3rd-4th bytes: request id in uint16_t format
+///		other 8*(quantity of components) bytes: array of quantity components in uint64_t format
+/// </summary>
 
 namespace MS
 {
