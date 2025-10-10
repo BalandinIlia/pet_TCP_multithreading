@@ -9,8 +9,8 @@ namespace MS
 		switch (t)
 		{
 		case ETypeMes::eReq: return 'a';
-		case ETypeMes::eAnsEmpty: return 'b';
-		case ETypeMes::eAnsInf: return 'c';
+		case ETypeMes::eAnsNo: return 'b';
+		case ETypeMes::eAnsYes: return 'c';
 		case ETypeMes::eError: return 0;
 		}
 	}
@@ -20,8 +20,8 @@ namespace MS
 		switch (c)
 		{
 		case 'a': return ETypeMes::eReq;
-		case 'b': return ETypeMes::eAnsEmpty;
-		case 'c': return ETypeMes::eAnsInf;
+		case 'b': return ETypeMes::eAnsNo;
+		case 'c': return ETypeMes::eAnsYes;
 		default: return ETypeMes::eError;
 		}
 	}
@@ -31,8 +31,8 @@ namespace MS
 		switch (t)
 		{
 		case ETypeMes::eReq: return 10;
-		case ETypeMes::eAnsEmpty: return 2;
-		case ETypeMes::eAnsInf: return -1;
+		case ETypeMes::eAnsNo: return 2;
+		case ETypeMes::eAnsYes: return -1;
 		case ETypeMes::eError: return -2;
 		}
 	}
@@ -73,7 +73,7 @@ namespace MS
 		return ans;
 	}
 
-	std::vector<char> serializeAnsInf(const std::vector<number> aNum, short id)
+	std::vector<char> serializeAnsYes(const std::vector<number> aNum, short id)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(aNum.size());
@@ -104,7 +104,7 @@ namespace MS
 		aVal = buf.data() + 1;
 
 		// fill the buffer
-		*pCode = codeType(ETypeMes::eAnsInf);
+		*pCode = codeType(ETypeMes::eAnsYes);
 		*pQuant = static_cast<uint8_t>(N);
 		*pId = static_cast<uint16_t>(id);
 		for (int i = 0; i < N; i++)
@@ -119,7 +119,7 @@ namespace MS
 		return ans;
 	}
 
-	std::array<char, 3> serializeAnsEmpty(short id)
+	std::array<char, 3> serializeAnsNo(short id)
 	{
 		// In this function we serialize the following fields:
 		// 1. Message code
@@ -138,7 +138,7 @@ namespace MS
 		pId = reinterpret_cast<uint16_t*>(pSer + 1);
 
 		// fill the buffer
-		*pCode = codeType(ETypeMes::eAnsEmpty);
+		*pCode = codeType(ETypeMes::eAnsNo);
 		*pId = static_cast<uint16_t>(id);
 
 		// return the serialization
@@ -167,13 +167,13 @@ namespace MS
 		return std::pair<short, number>(id, num);
 	}
 
-	int bufSizeAnsInf(char c)
+	int bufSizeAnsYes(char c)
 	{
 		uint8_t* p = reinterpret_cast<uint8_t*>(&c);
 		return (*p) * 8 + 2;
 	}
 
-	std::pair<short, std::vector<number>> deserializeAnsInf(const std::vector<char>& rawData)
+	std::pair<short, std::vector<number>> deserializeAnsYes(const std::vector<char>& rawData)
 	{
 		// quantity of elements
 		const int N = static_cast<int>(rawData.size() - 2) / 8;
@@ -200,7 +200,7 @@ namespace MS
 		return std::pair<short, std::vector<number>>(idRet, aNumRet);
 	}
 
-	short deserializeAnsEmpty(const std::array<char, 2>& rawData)
+	short deserializeAnsNo(const std::array<char, 2>& rawData)
 	{
 		uint16_t id = 0;
 

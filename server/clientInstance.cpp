@@ -12,14 +12,14 @@ void solveCase(short id, number num, SOCKET idSocket, std::mutex* mutSocket)
 	std::vector<number> aNum = CMathCoreHost::one().get(num);
 	if (aNum.empty())
 	{
-		std::array<char, 3> buf = MS::serializeAnsEmpty(id);
+		std::array<char, 3> buf = MS::serializeAnsNo(id);
 		mutSocket->lock();
 		sendAll(idSocket, buf.data(), 3);
 		mutSocket->unlock();
 	}
 	else
 	{
-		std::vector<char> buf = MS::serializeAnsInf(aNum, id);
+		std::vector<char> buf = MS::serializeAnsYes(aNum, id);
 		mutSocket->lock();
 		sendAll(idSocket, buf.data(), static_cast<int>(buf.size()));
 		mutSocket->unlock();

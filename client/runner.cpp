@@ -49,11 +49,11 @@ void CRunner::receive()
         const MS::ETypeMes t = MS::decodeType(c);
         switch (t)
         {
-        case MS::ETypeMes::eAnsEmpty:
+        case MS::ETypeMes::eAnsNo:
         {
             std::array<char, 2> buf;
             recvAll(m_idSocket, buf.data(), 2);
-            const short id = MS::deserializeAnsEmpty(buf);
+            const short id = MS::deserializeAnsNo(buf);
 
             // Here I access the table. While I don't modify the table here, I still have to lock the mutex to
             // make sure the table is not modified while I am accessing it. If I don't do this, I can get some 
@@ -75,14 +75,14 @@ void CRunner::receive()
             m_mutCons.unlock();
             break;
         }
-        case MS::ETypeMes::eAnsInf:
+        case MS::ETypeMes::eAnsYes:
         {
             recvAll(m_idSocket, &c, 1);
-            const int sz = MS::bufSizeAnsInf(c);
+            const int sz = MS::bufSizeAnsYes(c);
             std::vector<char> buf;
             buf.resize(sz);
             recvAll(m_idSocket, buf.data(), sz);
-            const std::pair<short, std::vector<number>> ans = MS::deserializeAnsInf(buf);
+            const std::pair<short, std::vector<number>> ans = MS::deserializeAnsYes(buf);
             const short id = ans.first;
             const std::vector<number>& aComp = ans.second;
 
