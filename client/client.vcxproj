@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainC.cpp" />
+    <ClCompile Include="runner.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="runner.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
