@@ -2,15 +2,18 @@
 #include "host.h"
 #include "solver.h"
 
-CMathCoreHost* CMathCoreHost::pOne = nullptr;
+std::unique_ptr<CMathCoreHost> CMathCoreHost::pOne;
+
+std::mutex CMathCoreHost::m_mutCreate;
 
 CMathCoreHost::CMathCoreHost() {}
 
 CMathCoreHost& CMathCoreHost::one()
 {
-	if (pOne == nullptr)
+	LG lk(m_mutCreate);
+	if (pOne.get() == nullptr)
 	{
-		pOne = new CMathCoreHost;
+		pOne = std::move(std::unique_ptr<CMathCoreHost>(new CMathCoreHost));
 	}
 	return *pOne;
 }
@@ -18,28 +21,31 @@ CMathCoreHost& CMathCoreHost::one()
 std::vector<number> CMathCoreHost::get(number num)
 {
 	{
-		// check if the solution is already known
+		// check if the answer is already cached
 		LG lk(m_mutMap);
-		if (m_solutions.find(num) != m_solutions.end())
+		if (m_answers.find(num) != m_answers.end())
 		{
-			auto ret = m_solutions[num];
+			const auto& ret = m_answers[num];
 			return ret;
 		}
 	}
 
-	auto ans = solve(num);
+	const auto ans = solve(num);
 	
 	LG lk(m_mutMap);
-	if (m_solutions.find(num) != m_solutions.end())
+	// Here I do the second check if the answer is already cached.
+	// This check is neccessary even after the first check, because 
+	// the answer could have been added to the cache after the first
+	// check in another thread while this thread was running the 
+	// mathematical algorithm.
+	if (m_answers.find(num) != m_answers.end())
 	{
-		auto ret = m_solutions[num];
+		const auto& ret = m_answers[num];
 		return ret;
 	}
-	m_solutions[num] = ans;
+	m_answers[num] = ans;
 	return ans;
 }
 
 CMathCoreHost::~CMathCoreHost()
-{
-	delete pOne;
-}
+{}
