@@ -74,7 +74,6 @@ void CRunner::receive()
             }
             const short id = MS::deserializeAnsNo(buf);
 
-
             std::ostringstream sError;
             number n = 0;
             TP time = std::chrono::system_clock::now().time_since_epoch();
@@ -99,7 +98,7 @@ void CRunner::receive()
                     std::cout << std::endl << sError.str();
                 else
                 {
-                    int tPrint = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
+                    const int tPrint = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
                     std::cout << std::endl << "Decomposition of " << n << " is impossible. "
                         << "The request took " << tPrint << " ms";
                 }
@@ -127,10 +126,14 @@ void CRunner::receive()
 
             std::ostringstream sError;
             number n = 0;
+            TP time = std::chrono::system_clock::now().time_since_epoch();
             {
                 LG lk(m_mutTable);
                 if (m_table.find(id) != m_table.end())
+                {
                     n = m_table[id];
+                    time -= m_tableTime[id];
+                }
                 else
                     sError << "Error: inner table does not contain request id " << id << " received from the server.";
             }
@@ -139,9 +142,14 @@ void CRunner::receive()
                 LG lk(m_mutCons);
                 if (!sError.str().empty())
                     std::cout << std::endl << sError.str();
-                std::cout << std::endl << n << " is decomposable:";
-                for (const number& comp : aComp)
-                    std::cout << comp << " ";
+                else
+                {
+                    const int tPrint = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
+                    std::cout << std::endl << n << " is decomposable:";
+                    for (const number& comp : aComp)
+                        std::cout << comp << " ";
+                    std::cout << "The request took " << tPrint << " ms";
+                }
             }
             break;
         }
