@@ -1,5 +1,6 @@
 #pragma once
-#include "pch.h"
+#include "vector"
+#include "array"
 #include "../controls/controls.h"
 /// <summary>
 /// This file introduces my own protocol for client-server communication working over TCP.

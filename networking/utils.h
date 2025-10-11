@@ -1,5 +1,5 @@
 #pragma once
-#include "pch.h"
+#include "winsock2.h"
 
 // This is an utility class: it configures environment for windows sockets when it is constructed and
 // deconfigures it when it is destructured.
