@@ -19,7 +19,7 @@ int main()
         std::ostringstream mes;
         mes << "Socket creation failed: " << WSAGetLastError();
         log(mes.str());
-        Sleep(10000);
+        Sleep(100000);
         return 0;
     }
         
@@ -31,6 +31,10 @@ int main()
 
     listen(idSocket, SOMAXCONN);
 
+    // client identificator
+    // Receive a connection from a client and serve the client in a separate thread. 
+    // This thread keeps listening for new connections. This design allows to serve
+    // several clients simultaneously.
     int idClient = 1;
     for (;;)
     {
