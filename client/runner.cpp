@@ -22,27 +22,29 @@ void CRunner::send()
         while (c != 'a')
             c = std::cin.get();
 
-        // Take a number from the user (from console). So here I lock the console mutex to own the console.
-        m_mutCons.lock();
-        std::cout << "Input a number: ";
         number num = 0;
-        std::cin >> num;
+        {
+            // Take a number from the user (from console). So here I lock the console mutex to own the console.
+            LG lk(m_mutCons);
+            std::cout << "Input a number: ";
+            std::cin >> num;
+            std::cout << std::endl << "Sent request " << num << ". Request id " << m_id << ".";
+        }
+
         std::array<char, 11> mes = MS::serializeRequest(num, m_id);
-        std::cout << std::endl << "Sent request " << num << ". Request id " << m_id << ".";
-        m_mutCons.unlock();
-
-        // Modify the table. So here I lock the table mutex to own the table.
-        m_mutTable.lock();
         const bool bOk = sendAll(m_idSocket, mes.data(), 11);
-        m_table[m_id] = num;
-        m_mutTable.unlock();
-
         if (!bOk)
         {
-            m_mutCons.lock();
+            LG lk(m_mutCons);
             std::cout << std::endl << "Connection with server lost";
-            m_mutCons.unlock();
             return;
+        }
+
+        {
+            // Modify the table. So here I lock the table mutex to own the table.
+            LG lk(m_mutTable);
+            m_table[m_id] = num;
+            m_tableTime[m_id] = std::chrono::system_clock::now().time_since_epoch();
         }
         
         m_id++;
@@ -72,29 +74,41 @@ void CRunner::receive()
             }
             const short id = MS::deserializeAnsNo(buf);
 
-            // Here I access the table. While I don't modify the table here, I still have to lock the mutex to
-            // make sure the table is not modified while I am accessing it. If I don't do this, I can get some 
-            // intermediate table state (half-modified).
-            std::ostringstream sError;
-            m_mutTable.lock();
-            number n = 0;
-            if (m_table.find(id) != m_table.end())
-                n = m_table[id];
-            else
-                sError << "Error: inner table does not contain request id " << id << " received from the server.";
-            m_mutTable.unlock();
 
-            // Show a number from the user (to console). So here I lock the console mutex to own the console.
-            m_mutCons.lock();
-            if (!sError.str().empty())
-                std::cout << std::endl << sError.str();
-            std::cout << std::endl << "Decomposition of " << n << " is impossible";
-            m_mutCons.unlock();
+            std::ostringstream sError;
+            number n = 0;
+            TP time = std::chrono::system_clock::now().time_since_epoch();
+            {
+                // Here I access the table. While I don't modify the table here, I still have to lock the mutex to
+                // make sure the table is not modified while I am accessing it. If I don't do this, I can get some 
+                // intermediate table state (half-modified).
+                LG lk(m_mutTable);
+                if (m_table.find(id) != m_table.end())
+                {
+                    n = m_table[id];
+                    time -= m_tableTime[id];
+                }
+                else
+                    sError << "Error: inner table does not contain request id " << id << " received from the server.";
+            }
+
+            {
+                // Show a number from the user (to console). So here I lock the console mutex to own the console.
+                LG lk(m_mutCons);
+                if (!sError.str().empty())
+                    std::cout << std::endl << sError.str();
+                else
+                {
+                    int tPrint = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(time).count());
+                    std::cout << std::endl << "Decomposition of " << n << " is impossible. "
+                        << "The request took " << tPrint << " ms";
+                }
+            }
             break;
         }
         case MS::ETypeMes::eAnsYes:
         {
-            if(!recvAll(m_idSocket, &c, 1))
+            if (!recvAll(m_idSocket, &c, 1))
             {
                 logConnectionLost();
                 return;
@@ -102,7 +116,7 @@ void CRunner::receive()
             const int sz = MS::bufSizeAnsYes(c);
             std::vector<char> buf;
             buf.resize(sz);
-            if(!recvAll(m_idSocket, buf.data(), sz))
+            if (!recvAll(m_idSocket, buf.data(), sz))
             {
                 logConnectionLost();
                 return;
@@ -112,28 +126,29 @@ void CRunner::receive()
             const std::vector<number>& aComp = ans.second;
 
             std::ostringstream sError;
-            m_mutTable.lock();
             number n = 0;
-            if (m_table.find(id) != m_table.end())
-                n = m_table[id];
-            else
-                sError << "Error: inner table does not contain request id " << id << " received from the server.";
-            m_mutTable.unlock();
+            {
+                LG lk(m_mutTable);
+                if (m_table.find(id) != m_table.end())
+                    n = m_table[id];
+                else
+                    sError << "Error: inner table does not contain request id " << id << " received from the server.";
+            }
 
-            m_mutCons.lock();
-            if (!sError.str().empty())
-                std::cout << std::endl << sError.str();
-            std::cout << std::endl << n << " is decomposable:";
-            for (const number& comp : aComp)
-                std::cout << comp << " ";
-            m_mutCons.unlock();
+            {
+                LG lk(m_mutCons);
+                if (!sError.str().empty())
+                    std::cout << std::endl << sError.str();
+                std::cout << std::endl << n << " is decomposable:";
+                for (const number& comp : aComp)
+                    std::cout << comp << " ";
+            }
             break;
         }
         default:
         {
-            m_mutCons.lock();
+            std::lock_guard<std::mutex> lk(m_mutCons);
             std::cout << std::endl << "Incorrect code from server";
-            m_mutCons.unlock();
             break;
         }
         }
@@ -142,7 +157,6 @@ void CRunner::receive()
 
 void CRunner::logConnectionLost()
 {
-    m_mutCons.lock();
+    LG lk(m_mutCons);
     std::cout << std::endl << "Connection with server lost";
-    m_mutCons.unlock();
 }
