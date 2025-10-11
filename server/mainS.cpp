@@ -23,7 +23,6 @@ int main()
         return 0;
     }
 
-#if (EXPERIMENTAL_ABI == 1)
     // This is an experimental binding of the socket.
     // Here I don't use standard structure to prepare binary
     // data for bind function. Instead I prepare binary data
@@ -73,13 +72,6 @@ int main()
     buf[3] = psp[0];
     
     bind(idSocket, reinterpret_cast<sockaddr*>(buf), 16);
-#else
-    sockaddr_in serverAddr{};
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = htonl(addrIP);
-    serverAddr.sin_port = htons(port);
-    bind(idSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
-#endif
 
     listen(idSocket, SOMAXCONN);
 
