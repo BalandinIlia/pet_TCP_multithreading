@@ -129,4 +129,5 @@ void serveClient(SOCKET idSocket, int idClient)
 
 	CThreadClient thr(idSocket, idClient);
 	thr.run();
+	closesocket(idSocket);
 }
