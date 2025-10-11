@@ -46,10 +46,10 @@ private:
 	// id of the next request
 	short m_id;
 
-	// This is a mutex guarding the table. It prevents send and receive threads from accessing the table simultaneously.
+	// This is a mutex guarding the tables. It prevents send and receive threads from accessing the tables simultaneously.
 	// Now there is only one CRunner instance, so there is no difference if this mutex is static or not.
 	// However, if in the future, I decide to create several different runners, each will have its own table, so
-	// each should have its own table mutex. So don't make this mutex static.
+	// each should have its own table mutex. So I don't make this mutex static.
 	std::mutex m_mutTable;
 
 	// This is a mutex guarding the console. It prevents receive thread from outputting to console while receive thread
