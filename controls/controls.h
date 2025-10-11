@@ -19,4 +19,6 @@ extern const TCPPort port;
 // This delay is necessary to simulate complex core algorithm
 extern const int delayAlgo;
 
+// This macros turns on/off my experimental building of data
+// buffer for bind function.
 #define EXPERIMENTAL_ABI 0
