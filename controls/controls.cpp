@@ -10,4 +10,4 @@ const TCPPort port = 5555;
 
 static_assert(sizeof(number) == 8, "wrong type of number type");
 
-const int delayAlgo = 10000;
+const int delayAlgo = 5000;
