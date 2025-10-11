@@ -4,8 +4,12 @@
 #include "thread"
 #include "mutex"
 #include "map"
+#include "chrono"
 #include "../networking/messages.h"
 #include "../networking/utils.h"
+
+// TP means "Time Point"
+typedef std::chrono::time_point<std::chrono::system_clock>::duration TP;
 
 // This class runs interaction with the server
 class CRunner
@@ -35,6 +39,9 @@ private:
 
 	// A table with key, - request id and value, - request value
 	std::map<short, number> m_table;
+
+	// A table with key, - request id; value, - the time point when the request was sent
+	std::map<short, TP> m_tableTime;
 
 	// id of the next request
 	short m_id;
