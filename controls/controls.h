@@ -18,3 +18,5 @@ extern const TCPPort port;
 // artificial mathematical core algorithm delay
 // This delay is necessary to simulate complex core algorithm
 extern const int delayAlgo;
+
+#define EXPERIMENTAL_ABI 0
