@@ -17,26 +17,25 @@ CMathCoreHost& CMathCoreHost::one()
 
 std::vector<number> CMathCoreHost::get(number num)
 {
-	m_mutMap.lock();
-	if (m_solutions.find(num) != m_solutions.end())
 	{
-		auto ret = m_solutions[num];
-		m_mutMap.unlock();
-		return ret;
+		// check if the solution is already known
+		LG lk(m_mutMap);
+		if (m_solutions.find(num) != m_solutions.end())
+		{
+			auto ret = m_solutions[num];
+			return ret;
+		}
 	}
-	m_mutMap.unlock();
 
 	auto ans = solve(num);
 	
-	m_mutMap.lock();
+	LG lk(m_mutMap);
 	if (m_solutions.find(num) != m_solutions.end())
 	{
 		auto ret = m_solutions[num];
-		m_mutMap.unlock();
 		return ret;
 	}
 	m_solutions[num] = ans;
-	m_mutMap.unlock();
 	return ans;
 }
 
