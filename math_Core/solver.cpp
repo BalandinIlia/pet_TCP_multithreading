@@ -10,7 +10,7 @@ std::vector<number> solve(number n)
 	// cnt is the current pow of 3
 	number cnt = 1;
 
-	// In this cycle we examine all digits of ternary representation of n from the lowest to the highest.
+	// In this cycle I examine all digits of ternary representation of n from the lowest to the highest.
 	// The cycle works the following way:
 	// Imagine that n is represented as abcd in the ternary system (where a,b,c,d are digits)
 	// 1. At the first step dig=d; after the first step n=abc
