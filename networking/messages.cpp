@@ -39,11 +39,11 @@ namespace MS
 
 	std::array<char, 11> serializeRequest(number req, short idRequest)
 	{
-		// In this function we serialize the following fields:
+		// In this function I serialize the following fields:
 		// 1. Message code
 		// 2. Request id
 		// 3. Number (request body)
-		// So, first we introduce pointers to all these 3 parts
+		// So, first I introduce pointers to all these 3 parts
 
 		// This is a pointer to the message code field
 		char* pCode = nullptr;
@@ -52,7 +52,7 @@ namespace MS
 		// a pointer to the body field
 		uint64_t* pNum = nullptr;
 
-		// This is a memory chunk we will use for message serialization
+		// This is a memory chunk I will use for message serialization
 		// This chunk contains 16 bytes, while I need to serialize only 11 bytes.
 		// I still reserve buffer of 16 bytes due to data alignment.
 		// The number must be written at address multiple of 8. So first 8 bytes
@@ -69,7 +69,7 @@ namespace MS
 		*pId = static_cast<uint16_t>(idRequest);
 		*pNum = static_cast<uint64_t>(req);
 
-		// here we return the serialization
+		// here I return the serialization
 		std::array<char, 11> ans;
 		for (int i = 0; i < 11; i++)
 			ans[i] = pSer[i];
@@ -81,12 +81,12 @@ namespace MS
 		// quantity of elements
 		const int N = static_cast<int>(aNum.size());
 
-		// In this function we serialize the following fields:
+		// In this function I serialize the following fields:
 		// 1. Message code
 		// 2. Quantity of elements
 		// 3. Request id
 		// 4. Numbers
-		// So, first we introduce pointers to all these 4 parts
+		// So, first I introduce pointers to all these 4 parts
 
 		// pointer to the message code in the buffer
 		char* pCode = nullptr;
@@ -97,7 +97,7 @@ namespace MS
 		// pointer of the array of numbers in the buffer
 		uint64_t* aVal = nullptr;
 
-		// Here we reserve a memory chunk to serialize the message. 
+		// Here I reserve a memory chunk to serialize the message. 
 		// Data alignment is taken into account.
 		std::vector<uint64_t> buf;
 		buf.resize(N + 1);
@@ -125,17 +125,17 @@ namespace MS
 
 	std::array<char, 3> serializeAnsNo(short id)
 	{
-		// In this function we serialize the following fields:
+		// In this function I serialize the following fields:
 		// 1. Message code
 		// 2. Request id
-		// So, first we introduce pointers to all these 2 parts
+		// So, first I introduce pointers to all these 2 parts
 
 		// pointer to the message code in the buffer
 		char* pCode = nullptr;
 		// pointer to id
 		uint16_t* pId = nullptr;
 
-		// Here we reserve a memory chunk to serialize the message.
+		// Here I reserve a memory chunk to serialize the message.
 		// Data alignment is taken into account.
 		std::array<uint16_t, 2> buf;
 		char* pSer = reinterpret_cast<char*>(buf.data()) + 1;
@@ -155,7 +155,7 @@ namespace MS
 
 	std::pair<short, number> deserializeRequest(const std::array<char, 10>& rawData)
 	{
-		// In this function we deserialize the request
+		// In this function I deserialize the request
 		uint16_t id = 0;
 		uint64_t num = 0;
 
